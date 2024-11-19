@@ -27,5 +27,6 @@ A responsive and user-friendly web-based GPA calculator designed specifically fo
 3. Select the subject, assign the credits, and choose a grade for each course.
 4. Click the **Calculate GPA** button to compute your GPA.
 5. To start over, use the **Clear All** button.
+![Screenshot 2024-11-19 074702](https://github.com/user-attachments/assets/7adfa941-3880-4c27-b3cb-a063375bd4e5)
 
 
