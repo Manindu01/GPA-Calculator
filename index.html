@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Diploma GPA Calculator</title>
+  <style>
+    /* Reset and Global Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f3f4f6;
+      color: #333;
+      line-height: 1.6;
+      padding: 20px;
+    }
+
+    /* Container */
+    .container {
+      max-width: 800px;
+      margin: auto;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      padding: 20px;
+    }
+
+    /* Header */
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #2c3e50;
+    }
+
+    /* Table Styles */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+    table, th, td {
+      border: 1px solid #ddd;
+    }
+    th {
+      background: #2c3e50;
+      color: #fff;
+      font-weight: bold;
+      text-align: center;
+    }
+    td {
+      text-align: center;
+      padding: 10px;
+    }
+    select, input {
+      width: 90%;
+      padding: 5px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-block;
+      background: #28a745;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      margin: 10px 5px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      text-align: center;
+    }
+    .btn:hover {
+      background: #218838;
+    }
+    .btn-clear {
+      background: #dc3545;
+    }
+    .btn-clear:hover {
+      background: #c82333;
+    }
+
+    /* Result */
+    .result {
+      text-align: center;
+      font-size: 20px;
+      font-weight: bold;
+      margin-top: 20px;
+      color: #2c3e50;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>GPA Calculator</h1>
+    <table>
+      <thead>
+        <tr>
+          <th>Subject</th>
+          <th>Credits</th>
+          <th>Grade</th>
+        </tr>
+      </thead>
+      <tbody id="courses">
+        <!-- Rows will be dynamically added -->
+      </tbody>
+    </table>
+    <button class="btn" onclick="addRow()">+ Add Course</button>
+    <button class="btn" onclick="calculateGPA()">Calculate GPA</button>
+    <button class="btn btn-clear" onclick="clearAll()">Clear All</button>
+    <div class="result" id="result"></div>
+  </div>
+
+  <script>
+    // Diploma subjects based on the uploaded document
+    const subjects = [
+      "Mathematics I", "Physics", "Chemistry", "English Communication",
+      "Computer Fundamentals", "Engineering Graphics", "Workshop Practice",
+      "Environmental Studies", "Mathematics II", "Applied Mechanics",
+      "Electrical Engineering", "Mechanical Engineering", "Civil Engineering",
+      "Programming in C"
+    ];
+
+    // Credit options (from 1 to 6)
+    const creditOptions = [1, 2, 3, 4, 5, 6];
+
+    // Grading system based on GPA scale
+    const gradesToPoints = {
+      "A+": 4.0, "A": 4.0, "A-": 3.7,
+      "B+": 3.3, "B": 3.0, "B-": 2.7,
+      "C+": 2.3, "C": 2.0, "C-": 1.7,
+      "D+": 1.3, "D": 1.0, "E": 0.0
+    };
+
+    // Automatically add the first row when the page loads
+    document.addEventListener("DOMContentLoaded", () => {
+      addRow();
+    });
+
+    // Function to add a row dynamically
+    function addRow() {
+      const table = document.getElementById("courses");
+      const row = document.createElement("tr");
+
+      // Subject dropdown
+      const subjectCell = document.createElement("td");
+      const subjectSelect = document.createElement("select");
+      subjects.forEach(subject => {
+        const option = document.createElement("option");
+        option.textContent = subject;
+        subjectSelect.appendChild(option);
+      });
+      subjectCell.appendChild(subjectSelect);
+
+      // Credits dropdown
+      const creditsCell = document.createElement("td");
+      const creditsSelect = document.createElement("select");
+      creditOptions.forEach(credit => {
+        const option = document.createElement("option");
+        option.value = credit;
+        option.textContent = credit;
+        creditsSelect.appendChild(option);
+      });
+      creditsCell.appendChild(creditsSelect);
+
+      // Grade dropdown
+      const gradeCell = document.createElement("td");
+      const gradeSelect = document.createElement("select");
+      Object.keys(gradesToPoints).forEach(grade => {
+        const option = document.createElement("option");
+        option.value = gradesToPoints[grade];
+        option.textContent = grade;
+        gradeSelect.appendChild(option);
+      });
+      gradeCell.appendChild(gradeSelect);
+
+      // Append cells to the row
+      row.appendChild(subjectCell);
+      row.appendChild(creditsCell);
+      row.appendChild(gradeCell);
+      table.appendChild(row);
+    }
+
+    // Function to calculate GPA
+    function calculateGPA() {
+      const rows = document.querySelectorAll("#courses tr");
+      let totalCredits = 0;
+      let totalPoints = 0;
+
+      rows.forEach(row => {
+        const credits = parseFloat(row.children[1].children[0].value) || 0;
+        const gradePoint = parseFloat(row.children[2].children[0].value) || 0;
+
+        totalCredits += credits;
+        totalPoints += credits * gradePoint;
+      });
+
+      const gpa = totalCredits > 0 ? (totalPoints / totalCredits).toFixed(2) : 0;
+      document.getElementById("result").textContent = `Your GPA is: ${gpa}`;
+    }
+
+    // Function to clear all rows and reset the result
+    function clearAll() {
+      document.getElementById("courses").innerHTML = "";
+      document.getElementById("result").textContent = "";
+      addRow();
+    }
+  </script>
+</body>
+</html>
